@@ -31,22 +31,14 @@ func TestGetConfigsPath(t *testing.T) {
 			want:     ".",
 		},
 	}
+	const envVar = "CONFIGS_PATH"
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			// Clean up env var after test
-			originalValue, originalSet := os.LookupEnv("CONFIGS_PATH")
-			defer func() {
-				if originalSet {
-					os.Setenv("CONFIGS_PATH", originalValue)
-				} else {
-					os.Unsetenv("CONFIGS_PATH")
-				}
-			}()
-
 			if tt.envSet {
-				os.Setenv("CONFIGS_PATH", tt.envValue)
+				t.Setenv(envVar, tt.envValue)
 			} else {
-				os.Unsetenv("CONFIGS_PATH")
+				t.Setenv(envVar, "")
+				os.Unsetenv(envVar)
 			}
 
 			if got := getConfigsPath(); got != tt.want {
